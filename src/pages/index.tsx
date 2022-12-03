@@ -2,33 +2,45 @@ import Head from "next/head";
 import { useState } from "react";
 
 export default function Home() {
-  const [value, setValue] = useState("");
-  const [amazon, setAmazon] = useState("https://www.amazon.co.jp/s?k=");
-  // const [rakuten, setRakuten] = useState("");
-  const [merukari, setMerukari] = useState("https://jp.mercari.com/search?keyword=");
-  const [door, setDoor] = useState("");
-  const [google, setGoogle] = useState("");
-  const [youtube, setYoutube] = useState("");
+  const [value, setValue] = useState<string>("");
+  const [searchWard, setSearchWard] = useState<string>("");
+  const [visible, setVisible] = useState<boolean>(false);
+  const [amazon, setAmazon] = useState<string>("https://www.amazon.co.jp/s?k=");
+  const [rakuten, setRakuten] = useState<string>(
+    "https://search.rakuten.co.jp/search/mall/"
+  );
+  const [merukari, setMerukari] = useState<string>(
+    "https://jp.mercari.com/search?keyword="
+  );
+  const [door, setDoor] = useState<string>(
+    "https://doors.doshisha.ac.jp/opac/opac_search/?lang=0&amode=2&appname=Netscape&version=5&cmode=0&smode=0&kywd"
+  );
+  const [google, setGoogle] = useState<string>("https://www.google.com/search?q=");
+  const [youtube, setYoutube] = useState<string>("https://www.youtube.com/");
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
 
-  const handleReset=()=>{
-    window.location.reload()
+  const handleReset = () => {
+    window.location.reload();
+  };
+
+  const handleOpen=()=>{
+    setVisible(!visible)
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSearchWard(value);
     setAmazon(`https://www.amazon.co.jp/s?k=${value}`);
-    // setRakuten(`https://search.rakuten.co.jp/search/mall/${value}`);
+    setRakuten(`https://search.rakuten.co.jp/search/mall/${value}`);
     setMerukari(`https://jp.mercari.com/search?keyword=${value}`);
     setDoor(
       `https://doors.doshisha.ac.jp/opac/opac_search/?lang=0&amode=2&appname=Netscape&version=5&cmode=0&smode=0&kywd=${value}&index_amazon_s=Books&node_s=`
     );
-    setGoogle(`https://www.google.com/search?q=${value}`)
-    setYoutube(`https://www.youtube.com/results?search_query=${value}`)
-
+    setGoogle(`https://www.google.com/search?q=${value}`);
+    setYoutube(`https://www.youtube.com/results?search_query=${value}`);
   };
   return (
     <div>
@@ -39,7 +51,17 @@ export default function Home() {
       </Head>
 
       <div className="m-10">
-        <h1 className="text-2xl">同時検索アプリ</h1>
+        <div className="flex">
+          <h1 className="text-2xl">同時検索アプリ</h1>
+          <h2 className="ml-2 p-1 px-2 border rounded-full border-gray-400" onClick={handleOpen}>
+            ？
+          </h2>
+        </div>
+          <ul className={visible ? "mt-3 list-disc border-2 rounded-xl p-2 pl-6 border-gray-600 w-3/4":"hidden"}>
+            <li className="">検索キーワードを入力することで複数のwebサイトで同時に検索することができます。</li>
+            <li className="">同じ商品を何度も他のサイトで検索する必要がなくなります。</li>
+            <li className="">技術的にはとても単純ですが、便利です。</li>
+          </ul>
 
         <div className="mt-5">
           <form className="flex" onSubmit={(e) => handleSubmit(e)}>
@@ -64,10 +86,13 @@ export default function Home() {
               reset
             </button>
           </form>
+          <p className="text-2xl mt-7 p-2 border-b-2 border-gray-700 inline-block">
+            検索キーワード「{searchWard}」
+          </p>
         </div>
 
         <div>
-          <ul className="mt-10">
+          <ul className="mt-5">
             <li className="flex my-1">
               <a
                 className="border-2 border-gray-400 w-1/4 rounded p-2"
@@ -118,7 +143,7 @@ export default function Home() {
                 YouTubeで検索
               </a>
             </li>
-            {/* <li className="flex my-1">
+            <li className="flex my-1">
               <a
                 className="border-2 border-gray-400 w-1/4 rounded p-2"
                 href={rakuten}
@@ -127,7 +152,7 @@ export default function Home() {
               >
                 楽天で検索
               </a>
-            </li> */}
+            </li>
           </ul>
         </div>
       </div>
